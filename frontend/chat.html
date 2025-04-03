@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChatGPT Clone</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: whitesmoke;
+    padding: 10px 10px;
+}
+
+.logo img {
+    width: 200px;
+    height: auto;
+    margin-right: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+.logo{
+    display: flex;
+    padding: auto;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
+    color: black;
+    backdrop-filter: blur(20px);
+    filter: drop-shadow(0.25rem 0.25rem 0.5rem rgba(#0005));
+}
+@media (prefers-reduced-motion){
+    nav *{
+        transition-duration: 0s !important;
+        animation-duration: 0s !important;
+    }
+}
+.nav-btn {
+    text-decoration: none;
+    background: rgb(239, 237, 237);
+    color: rgb(15, 14, 14);
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: #fbcdcd;
+
+}
+
+
+    .chat-container {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .message {
+      max-width: 75%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .user { align-self: flex-end; background: linear-gradient(135deg,  #EE9CA7 , #FFDDE1); color: white; }
+    .bot { align-self: flex-start; background: #2a2a2a; color: #e0e0e0; }
+    .input-container {
+      display: flex;
+      padding: 12px;
+      border-top: 1px solid #333;
+      background-color: #121212;
+    }
+    #userInput {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background-color: #1a1a1a;
+      color: white;
+      font-size: 16px;
+      outline: none;
+    }
+    button {
+      margin-left: 12px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #EE9CA7 , #FFDDE1);
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {  background: linear-gradient(135deg, #EE9CA7 , #FFDDE1);}
+
+    .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle at center, rgba(251, 205, 205, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+        overflow: hidden;
+        z-index: -1;
+    }
+
+  .bubble {
+    position: absolute;
+    bottom: -100px;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #EE9CA7 , #ee9ea7);
+    border-radius: 50%;
+    animation: moveBubbles 10s linear infinite;
+  }
+
+  @keyframes moveBubbles {
+    0% {
+      transform: translateY(0) scale(0.5);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100vh) scale(1.2);
+      opacity: 0;
+    }
+  }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+        <img src = images/logo-header.png alt="Proposify-AI Logo" class="logo">
+    </div>
+    <nav>
+      <a href="index.html" class="nav-btn">Home</a>
+      <a href="proposify-ai.html" class="nav-btn">Proposify-AI</a>
+      <a href="chat.html" class="nav-btn">Chat Bot</a>
+    </nav>
+  </header>
+
+  <div class="chat-container" id="chat"></div>
+
+  <div class="input-container">
+    <input type="text" id="userInput" placeholder="Ask me anything..." onkeypress="if(event.key === 'Enter') sendMessage()"/>
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const chatContainer = document.getElementById("chat");
+    const userInput = document.getElementById("userInput");
+    let chatHistory = [];
+
+    function addMessage(role, content) {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message", role === "user" ? "user" : "bot");
+      messageDiv.innerHTML = marked.parse(content);
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = userInput.value.trim();
+      if (!input) return;
+      addMessage("user", input);
+      chatHistory.push({ role: "user", content: input });
+      userInput.value = "";
+      
+      const thinkingMsg = document.createElement("div");
+      thinkingMsg.classList.add("message", "bot");
+      thinkingMsg.textContent = "⏳ Thinking...";
+      chatContainer.appendChild(thinkingMsg);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+      
+      try {
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer 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", 
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "deepseek/deepseek-r1:free",
+            messages: chatHistory
+          })
+        });
+
+        const data = await response.json();
+        chatContainer.removeChild(thinkingMsg);
+        const botReply = data?.choices?.[0]?.message?.content || "❌ No response received.";
+        chatHistory.push({ role: "assistant", content: botReply });
+        addMessage("bot", botReply);
+      } catch (error) {
+        chatContainer.removeChild(thinkingMsg);
+        addMessage("bot", `❌ Error: ${error.message}`);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const background = document.createElement("div");
+    background.classList.add("background");
+    document.body.prepend(background);
+
+    function createBubble() {
+      const bubble = document.createElement("div");
+      bubble.classList.add("bubble");
+      const size = Math.random() * 40 + 10;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}vw`;
+      bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
+
+      background.appendChild(bubble);
+
+      setTimeout(() => {
+        bubble.remove();
+      }, 15000);
+    }
+
+    setInterval(createBubble, 300);
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposify-AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back">
+
+    <!-- HEADER WITH NAVIGATION -->
+    <header>
+        <div class="logo">
+            <img src = images/logo-header.png alt="Proposify-AI Logo" class="logo">
+        </div>
+        <nav>
+            <a href="index.html" class="nav-btn">Home</a>
+            <a href="proposify-ai.html" class="nav-btn">Proposify-AI</a>
+            <a href="chat.html" class="nav-btn">Chat-bot</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="container-1">
+            <h2>Effortless Proposal Creation</h2>
+        </section>
+        
+        <section class="form-container">
+            <h2>Enter Your Project Details</h2>
+            <textarea id="projectDetails" placeholder="Describe your project..." required></textarea>
+            <button id="generateProposal">Draft-Proposal</button>
+        </section>
+
+        <section class="proposal-output">
+            <h2>Generated Proposal:</h2>
+            <div id="proposalText">Your proposal will appear here...</div>
+            <button id="downloadPDF">Download PDF</button>
+        </section>
+
+        <section class="email-container">
+            <h2>Send Proposal as PDF</h2>
+            <label for="email">Enter Your Email:</label>
+            <input type="email" id="email" placeholder="your-email@example.com" required>
+            <button id="sendEmail">Send PDF</button>
+        </section>
+    </main>
+<br>
+<br>
+<br>
+    <footer>
+        <p>Team Proposify-AI</p>
+    </footer>
+</div>
+
+    <script src="script.js"></script>
+    <script src="three.r134.min.js"></script>
+<script src="vanta.fog.min.js"></script>
+<script>
+VANTA.FOG({
+  el: ".back",
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  blurFactor: 0.22
+})
+</script>
+</body>
+</html>
